@@ -2,7 +2,7 @@
 ## Chest CT Flow Chart
 
 ```mermaid
-flowchart TD
+flowchart LR
     Generator[Demo Generator] --> |1 DICOM| QveraIE[Qvera Interface Engine]
 
     QveraIE --> |2a ORM| GEIP[GE Intelligent Protocoling]
