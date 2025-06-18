@@ -7,12 +7,13 @@ flowchart TD
 
     QveraIE --> |2a ORM| GEIP[GE Intelligent Protocoling]
     QveraIE --> |2b ORM| Paxera
-    %% Does Blackford want ORMs?!?
-    QveraIE --> |2c ORM ??| Blackford
+    QveraIE --> |2c ORM| Blackford
     QveraIE --> |2d ORM| SmartReporting
     QveraIE --> |2e DICOM| Blackford
-    QveraIE --> |2f DICOM| Fovia
-    QveraIE --> |2g DICOM| ACRAssess
+    QveraIE --> |2f DICOM| Paxera
+    QveraIE --> |2g DICOM| Fovia
+    QveraIE --> |2h DICOM| ACRAssess
+    QveraIE --> |2i FHIR Resources for GEIP| HAPI_FHIR
 
     Blackford --> |3a DICOM Study| CorelineAVIEW
     Blackford --> |3b DICOM Study| SiemensAIRC[Siemens AI Rad Companion]
@@ -21,19 +22,23 @@ flowchart TD
     SiemensAIRC --> |4b DICOM Resuls| Blackford
 
     %% If Blackford has a good viewer. Maybe we review one study in their viewer? 
-    Blackford --> |5 Review Results| Blackford
+    Blackford --> |5 Review Results??| Blackford
 
-    Blackford --> |6 DICOM Resuls| QveraIE
+    Blackford --> |6a DICOM Results| QveraIE
+    Blackford --> |6b DICOM Results| Paxera
+    Blackford --> |6c DICOM Results| Fovia
+    Blackford --> |6d ORU Prioritization| Paxera
+    Blackford --> |6e ORU Results| ACRAssess
+    Blackford --> |6f FHIR Results| SmartReporting
     
-    QveraIE --> |7a DICOM Results| Paxera
-    QveraIE --> |7b DICOM Results| Fovia
-    QveraIE --> |7c ORU Results| ACRAssess
-    QveraIE --> |7d FHIR Results| SmartReporting
-    
-    %% Will we modify the results and broadcast the updated version? Opporunity for AIRAI
+    %% Will we modify the results and broadcast the updated version? Opporunity for AIRA
+    %% TODO: Check whether updated results are sent to Blackford or Qvera
     Fovia --> |7 Review Results| Fovia
+
+    %% Results combining to happen in Fovia
+    Fovia --> |8 Combine Results| Fovia
     
-    %% Combine results from both AI models into one report
     SmartReporting --> |8a ORU| Paxera
+    %% Can we do this over FHIR?!?
     SmartReporting --> |8b ORU| ACRAssess
 ```
