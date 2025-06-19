@@ -1,5 +1,5 @@
 # Team Coolidge
-## TBD Flow Chart
+## Abdominal CT Flow Chart
 
 ```mermaid
 flowchart TD
@@ -16,11 +16,11 @@ flowchart TD
     InterlinxIE --> |5a DICOM| Visage
     InterlinxIE --> |5b DICOM| HOPPR
     InterlinxIE --> |5c DICOM| Fovia
-    InterlinxIE --> |5d DICOM| ACRAssess
+    InterlinxIE --> |5d DICOM ??| ACRAssess
 
     HOPPR --> |6 AI Results DICOM SR| Fovia
 
-    Visage --> |7 Launch| Fovia
+    Visage --> |7 Embed| Fovia
 
     HOPPR --> |8 FHIR Agentic Workflows| HAPI_FHIR
 
@@ -32,6 +32,6 @@ flowchart TD
 
     Visage --> |12 Launch| MicrosoftPowerscribe
 
-    MicrosoftPowerscribe --> |13a ORU| Paxera
+    MicrosoftPowerscribe --> |13a ORU| Visage
     MicrosoftPowerscribe --> |13b ORU| ACRAssess
 ```
