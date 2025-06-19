@@ -7,8 +7,7 @@ flowchart TD
 
     QveraIE --> |2a ORM| EpicRadiant
     QveraIE --> |2b ORM| PACS
-    %% Does Newton's Tree want ORMs?!?
-    QveraIE --> |2c ORM ??| NewtonsTree
+    QveraIE --> |2c ORM| NewtonsTree
     QveraIE --> |2d ORM| RadAI
     QveraIE --> |2e DICOM| NewtonsTree
     QveraIE --> |2f DICOM| ACRAssess
@@ -17,19 +16,21 @@ flowchart TD
 
     icometrix --> |4 DICOM Resuls| NewtonsTree
 
-    %% AI results reviewed on the screen
+    %% AI results reviewed on the screen - Newtons Tree can do this as a blocking or parallel step
     NewtonsTree --> |5 Review Results| NewtonsTree
 
-    NewtonsTree --> |6 DICOM Resuls| QveraIE
+    NewtonsTree --> |6a DICOM Resuls| QveraIE
+    NewtonsTree --> |6b DICOM Results| PACS
+    NewtonsTree --> |6c ORU Results| ACRAssess
+    NewtonsTree --> |6d FHIR Results| EpicRadiant
+    NewtonsTree --> |6e FHIR Results| RadAI
 
-    QveraIE --> |7a DICOM Results| PACS
-    QveraIE --> |7b ORU Results| ACRAssess
-    QveraIE --> |7c FHIR Results| EpicRadiant
-    QveraIE --> |7d FHIR Results| RadAI
+    %% Could send FHIR results over FHIRcast
     
-    %% Where do CDS hooks go and what do they look like here?!?
+    %% TODO Where do CDS hooks go and what do they look like here?!?
 
-    %% Assuming we choose to report this study
+    %% Assuming we choose to report this study - maybe do FHIR?
+    %% TODO: Feature IHE IDR
     RadAI --> |8a ORU| PACS
     RadAI --> |8b ORU| EpicRadiant
     RadAI --> |8c ORU| ACRAssess
