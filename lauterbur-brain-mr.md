@@ -7,11 +7,11 @@ flowchart TD
 
     QveraIE --> |2a ORM| EpicRadiant
     QveraIE --> |2b ORM| PACS
-    %% Does Newton's Tree want ORMs?!?
-    QveraIE --> |2c ORM ??| NewtonsTree
+    QveraIE --> |2c ORM| NewtonsTree
     QveraIE --> |2d ORM| RadAI
     QveraIE --> |2e DICOM| NewtonsTree
-    QveraIE --> |2f DICOM| ACRAssess
+    %% Does ACR want DICOM?!?
+    QveraIE --> |2f DICOM ??| ACRAssess
 
     NewtonsTree --> |3 DICOM Study| SiemensAIRC[Siemens AI Rad Companion]
 
@@ -20,15 +20,15 @@ flowchart TD
     %% AI results reviewed on the screen
     NewtonsTree --> |5 Review Results| NewtonsTree
 
-    NewtonsTree --> |6 DICOM Resuls| QveraIE
-
-    QveraIE --> |7a DICOM Results| PACS
-    QveraIE --> |7b ORU Results| ACRAssess
-    QveraIE --> |7c FHIR Results| EpicRadiant
-    QveraIE --> |7d FHIR Results| RadAI
+    NewtonsTree --> |6a DICOM Resuls| QveraIE
+    NewtonsTree --> |6b DICOM Results| PACS
+    %% Check if ACR can do FHIR instead
+    NewtonsTree --> |6c ORU Results ??| ACRAssess
+    NewtonsTree --> |6d FHIR Results| EpicRadiant
+    NewtonsTree --> |6e FHIR Results| RadAI
 
     %% Assuming we choose to report this study
-    RadAI --> |8a ORU| PACS
-    RadAI --> |8b ORU| EpicRadiant
-    RadAI --> |8c ORU| ACRAssess
+    RadAI --> |7a ORU| PACS
+    RadAI --> |7b ORU| EpicRadiant
+    RadAI --> |7c ORU| ACRAssess
 ```
