@@ -33,6 +33,7 @@ flowchart LR
     Fovia --> |8 Reviewed DICOM Results| Blackford
  
     %% distribute results
+    %% Blackford might be able to output in FHIR
     Blackford --> |9a Reviewed DICOM Results| Paxera
     Blackford --> |9b Reviewed DICOM Results| ACRAssess
     Blackford --> |9c Reviewed ORU Results| ACRAssess
