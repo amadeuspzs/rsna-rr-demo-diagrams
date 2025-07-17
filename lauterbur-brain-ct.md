@@ -14,14 +14,14 @@ flowchart TD
 
     NewtonsTree --> |3 DICOM Study| icometrix
 
-    icometrix --> |4 DICOM Resuls| NewtonsTree
+    icometrix --> |4 DICOM Results| NewtonsTree
 
     %% AI results reviewed on the screen - Newtons Tree can do this as a blocking or parallel step
     NewtonsTree --> |5 Review Results| NewtonsTree
 
     NewtonsTree --> |6a DICOM Resuls| QveraIE
     NewtonsTree --> |6b DICOM Results| PACS
-    NewtonsTree --> |6c ORU Results| ACRAssess
+    NewtonsTree --> |6c FHIR Results| ACRAssess
     NewtonsTree --> |6d FHIR Results| EpicRadiant
     NewtonsTree --> |6e FHIR Results| RadAI
 
