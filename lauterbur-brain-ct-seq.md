@@ -1,37 +1,66 @@
 # Team Lauterbur
-## Brain CT Flow Chart
+## Brain CT Sequence Diagram
 
 ```mermaid
-flowchart TD
-    Generator[Demo Generator] --> |1 DICOM| QveraIE[Qvera Interface Engine]
+sequenceDiagram
+    participant Gen1 as Demo Generator (Prior)
+    participant Gen2 as Demo Generator (Current)
+    participant QveraIE as Qvera Interface Engine
+    participant Epic as EpicRadiant
+    participant PACS as PACS
+    participant NT as NewtonsTree
+    participant RadAI as RadAI
+    participant ACR as ACRAssess
+    participant iCo as icometrix
+    participant CDS as CDS Hooks
+    participant Radiologist as On-call Radiologist
+    participant CareTeam as Neurosurg / ICU
 
-    QveraIE --> |2a ORM| EpicRadiant
-    QveraIE --> |2b ORM| PACS
-    QveraIE --> |2c ORM| NewtonsTree
-    QveraIE --> |2d ORM| RadAI
-    QveraIE --> |2e DICOM| NewtonsTree
-    QveraIE --> |2f DICOM| ACRAssess
+    %% First CT (baseline)
+    Gen1->>QveraIE: 1. DICOM (Prior)
+    QveraIE->>Epic: ORM
+    QveraIE->>PACS: ORM
+    QveraIE->>NT: ORM + DICOM
+    QveraIE->>RadAI: ORM
+    QveraIE->>ACR: DICOM
 
-    NewtonsTree --> |3 DICOM Study| icometrix
-
-    icometrix --> |4 DICOM Results| NewtonsTree
-
-    %% AI results reviewed on the screen - Newtons Tree can do this as a blocking or parallel step
-    NewtonsTree --> |5 Review Results| NewtonsTree
-
-    NewtonsTree --> |6a DICOM Resuls| QveraIE
-    NewtonsTree --> |6b DICOM Results| PACS
-    NewtonsTree --> |6c FHIR Results| ACRAssess
-    NewtonsTree --> |6d FHIR Results| EpicRadiant
-    NewtonsTree --> |6e FHIR Results| RadAI
-
-    %% Could send FHIR results over FHIRcast
+    NT->>iCo: DICOM Study (Prior)
+    iCo-->>NT: DICOM Results (Baseline Ventricular Volume)
+    NT-->>PACS: Store Results + Overlay (Prior)
     
-    %% TODO Where do CDS hooks go and what do they look like here?!?
+    %% Second CT (follow-up)
+    Gen2->>QveraIE: 1. DICOM (Current)
+    QveraIE->>Epic: ORM
+    QveraIE->>PACS: ORM
+    QveraIE->>NT: ORM + DICOM
+    QveraIE->>RadAI: ORM
+    QveraIE->>ACR: DICOM
 
-    %% Assuming we choose to report this study - maybe do FHIR?
-    %% TODO: Feature IHE IDR
-    RadAI --> |8a ORU| PACS
-    RadAI --> |8b ORU| EpicRadiant
-    RadAI --> |8c ORU| ACRAssess
+    NT->>iCo: DICOM Study (Current)
+    iCo-->>NT: DICOM Results (Current Volume, % Change, Trend)
+
+    %% Review & CDS logic
+    NT-->>NT: Compare to Prior
+    alt Significant Change Detected
+        NT->>CDS: CDS Hook — Alert: ↑ Ventricular Size
+        CDS->>Epic: Notify Radiologist + CareTeam
+    end
+
+    %% Radiologist follow-up
+    Radiologist->>PACS: Review AI Overlay & Trends
+    Radiologist->>Epic: Interactive Report (multimedia + interpretation)
+    
+    %% Structured communication
+    NT->>QveraIE: DICOM Results
+    NT->>PACS: DICOM Results
+    NT->>ACR: FHIR Results
+    NT->>Epic: FHIR Results
+    NT->>RadAI: FHIR Results
+
+    RadAI->>PACS: ORU
+    RadAI->>Epic: ORU
+    RadAI->>ACR: ORU
+
+    Epic->>CareTeam: Alert: Hydrocephalus Progression → Reassessment
+
 ```

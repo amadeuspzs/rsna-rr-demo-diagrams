@@ -3,35 +3,49 @@
 
 ```mermaid
 flowchart TD
-    Generator[Demo Generator] --> |1 DICOM| QveraIE[Qvera Interface Engine]
+    %% Prior CT acquisition
+    subgraph CT_Prior
+        Gen1[Demo Generator Prior] --> |1a DICOM| QveraIE1[Qvera Interface Engine Prior]
+        QveraIE1 --> |2a ORM| Epic1[EpicRadiant]
+        QveraIE1 --> |2b ORM| PACS1[PACS]
+        QveraIE1 --> |2c ORM| NT1[NewtonsTree]
+        QveraIE1 --> |2d ORM| RadAI1[RadAI]
+        QveraIE1 --> |2e DICOM| NT1
+        QveraIE1 --> |2f DICOM| ACR1[ACRAssess]
+        NT1 --> |3 DICOM Study| iCo1[icometrix]
+        iCo1 --> |4 Results Baseline| NT1
+    end
 
-    QveraIE --> |2a ORM| EpicRadiant
-    QveraIE --> |2b ORM| PACS
-    QveraIE --> |2c ORM| NewtonsTree
-    QveraIE --> |2d ORM| RadAI
-    QveraIE --> |2e DICOM| NewtonsTree
-    QveraIE --> |2f DICOM| ACRAssess
+    %% Current CT acquisition
+    subgraph CT_Current
+        Gen2[Demo Generator Current] --> |1b DICOM| QveraIE2[Qvera Interface Engine Current]
+        QveraIE2 --> |2a ORM| Epic2[EpicRadiant]
+        QveraIE2 --> |2b ORM| PACS2[PACS]
+        QveraIE2 --> |2c ORM| NT2[NewtonsTree]
+        QveraIE2 --> |2d ORM| RadAI2[RadAI]
+        QveraIE2 --> |2e DICOM| NT2
+        QveraIE2 --> |2f DICOM| ACR2[ACRAssess]
+        NT2 --> |3 DICOM Study| iCo2[icometrix]
+        iCo2 --> |4 Results Current| NT2
+    end
 
-    NewtonsTree --> |3 DICOM Study| icometrix
+    %% AI comparison and alert logic
+    NT1 --> |5 Compare Prior & Current| NT2
+    NT2 --> |6a Alert Trigger| CDS[CDS Hooks]
+    CDS --> |6b Notify| Epic2
+    CDS --> |6c Notify| RadAI2
 
-    icometrix --> |4 DICOM Results| NewtonsTree
+    %% Results distribution
+    NT2 --> |6d DICOM Results| QveraIE2
+    NT2 --> |6e DICOM Results| PACS2
+    NT2 --> |6f FHIR Results| ACR2
+    NT2 --> |6g FHIR Results| Epic2
+    NT2 --> |6h FHIR Results| RadAI2
 
-    %% AI results reviewed on the screen - Newtons Tree can do this as a blocking or parallel step
-    NewtonsTree --> |5 Review Results| NewtonsTree
+    %% Reporting back
+    RadAI2 --> |8a ORU| PACS2
+    RadAI2 --> |8b ORU| Epic2
+    RadAI2 --> |8c ORU| ACR2
 
-    NewtonsTree --> |6a DICOM Resuls| QveraIE
-    NewtonsTree --> |6b DICOM Results| PACS
-    NewtonsTree --> |6c FHIR Results| ACRAssess
-    NewtonsTree --> |6d FHIR Results| EpicRadiant
-    NewtonsTree --> |6e FHIR Results| RadAI
 
-    %% Could send FHIR results over FHIRcast
-    
-    %% TODO Where do CDS hooks go and what do they look like here?!?
-
-    %% Assuming we choose to report this study - maybe do FHIR?
-    %% TODO: Feature IHE IDR
-    RadAI --> |8a ORU| PACS
-    RadAI --> |8b ORU| EpicRadiant
-    RadAI --> |8c ORU| ACRAssess
 ```
