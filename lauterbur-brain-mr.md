@@ -18,8 +18,8 @@ flowchart TD
 
     SiemensAIRC --> |4 DICOM Results| NewtonsTree
 
-    NewtonsTree --> |5 Review Results IHE AIRA| NewtonsTree
-    NewtonsTree --> |5a Apply AIRA Profile| NewtonsTree
+    NewtonsTree --> |5 Review Results IHE AIRA| ReviewResults[Review Results]
+    ReviewResults --> |5a Apply AIRA Profile| NewtonsTree
 
     NewtonsTree --> |6a Modified DICOM w/ AIRA| QveraIE
     NewtonsTree --> |6b Modified DICOM w/ AIRA| PACS
