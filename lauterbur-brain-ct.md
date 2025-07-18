@@ -1,51 +1,38 @@
 # Team Lauterbur
 ## Brain CT Flow Chart
 
+See [clinical scenario](https://docs.google.com/document/d/1AbMGfBinw8_epP9_cIjC8s-tYXvqS_8XI4lB4wp4Qxc/edit?tab=t.0#heading=h.bxasmyukr250)
+
 ```mermaid
 flowchart TD
-    %% Prior CT acquisition
-    subgraph CT_Prior
-        Gen1[Demo Generator Prior] --> |1a DICOM| QveraIE1[Qvera Interface Engine Prior]
-        QveraIE1 --> |2a ORM| Epic1[EpicRadiant]
-        QveraIE1 --> |2b ORM| PACS1[PACS]
-        QveraIE1 --> |2c ORM| NT1[NewtonsTree]
-        QveraIE1 --> |2d ORM| RadAI1[RadAI]
-        QveraIE1 --> |2e DICOM| NT1
-        QveraIE1 --> |2f DICOM| ACR1[ACRAssess]
-        NT1 --> |3 DICOM Study| iCo1[icometrix]
-        iCo1 --> |4 Results Baseline| NT1
-    end
-
+    Gen1[Generation and processing of 1st Scan - pre demo] --> Gen2
     %% Current CT acquisition
-    subgraph CT_Current
-        Gen2[Demo Generator Current] --> |1b DICOM| QveraIE2[Qvera Interface Engine Current]
-        QveraIE2 --> |2a ORM| Epic2[EpicRadiant]
-        QveraIE2 --> |2b ORM| PACS2[PACS]
-        QveraIE2 --> |2c ORM| NT2[NewtonsTree]
-        QveraIE2 --> |2d ORM| RadAI2[RadAI]
-        QveraIE2 --> |2e DICOM| NT2
-        QveraIE2 --> |2f DICOM| ACR2[ACRAssess]
-        NT2 --> |3 DICOM Study| iCo2[icometrix]
-        iCo2 --> |4 Results Current| NT2
-    end
+    Gen2[Demo Generator 2nd Scan] --> |1 DICOM| QveraIE[Qvera Interface Engine]
+    QveraIE --> |2a ORM| Epic[EpicRadiant]
+    QveraIE --> |2b ORM| PACS[PACS]
+    QveraIE --> |2c ORM| NT[NewtonsTree]
+    QveraIE --> |2d ORM| RadAI[RadAI]
+    QveraIE --> |2e DICOM| NT
+    QveraIE --> |2f DICOM| ACR[ACRAssess]
 
-    %% AI comparison and alert logic
-    NT1 --> |5 Compare Prior & Current| NT2
-    NT2 --> |6a Alert Trigger| CDS[CDS Hooks]
-    CDS --> |6b Notify| Epic2
-    CDS --> |6c Notify| RadAI2
+    %% Prior scan retrieval
+    NT --> |3a DICOM-QR via Patient ID or Accession| PACS
+    PACS --> |3b Prior Scans| NT
 
-    %% Results distribution
-    NT2 --> |6d DICOM Results| QveraIE2
-    NT2 --> |6e DICOM Results| PACS2
-    NT2 --> |6f FHIR Results| ACR2
-    NT2 --> |6g FHIR Results| Epic2
-    NT2 --> |6h FHIR Results| RadAI2
+    %% Send all scans to icometrix
+    NT --> |4 All Studies Prior and Current| iCo[icometrix AI]
+    iCo --> |5 DICOM-SR with Percent Change| NT
 
-    %% Reporting back
-    RadAI2 --> |8a ORU| PACS2
-    RadAI2 --> |8b ORU| Epic2
-    RadAI2 --> |8c ORU| ACR2
+    %% FHIR Reporting and Alerting
+    NT --> |6a FHIR Observation| ACR
+    NT --> |6b FHIR Observation| Epic
+    NT --> |6c FHIR Observation| RadAI
 
+    NT --> |7 Check if Percent Change > Threshold| AlertCheck[Evaluate Percent Change]
+    AlertCheck --> |7a Alert Triggered| NT
+    NT --> |7b FHIR Alert Message TBD| Epic
 
+    %% Optional results distribution
+    NT --> |8a DICOM Results| QveraIE
+    NT --> |8b DICOM Results| PACS
 ```
