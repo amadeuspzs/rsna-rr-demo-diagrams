@@ -3,35 +3,34 @@
 
 ```mermaid
 flowchart TD
-    Generator[Demo Generator] --> |1 DICOM| Enlitic
+    Generator[Demo Generator] --> |1 DICOM| InterlinxIE[Interlinx Interface Engine]
 
-    Enlitic --> |2a ORM| InterlinxIE[Interlinx Interface Engine]
-    Enlitic --> |2b DICOM| InterlinxIE
+    InterlinxIE --> |2a ORM| MicrosoftPowerscribe
+    InterlinxIE --> |2b ORM| PACS
 
-    InterlinxIE --> |3a ORM| MicrosoftPowerscribe
-    InterlinxIE --> |3b ORM| Visage
+    InterlinxIE --> |3 FHIR Resources for HOPPR| HAPI_FHIR
 
-    InterlinxIE --> |4 FHIR Resources for HOPPR| HAPI_FHIR
+    InterlinxIE --> |4a DICOM| PACS
+    InterlinxIE --> |4b DICOM| HOPPR
+    InterlinxIE --> |4c DICOM| Fovia
+    InterlinxIE --> |4d DICOM| ACRAssess
 
-    InterlinxIE --> |5a DICOM| Visage
-    InterlinxIE --> |5b DICOM| HOPPR
-    InterlinxIE --> |5c DICOM| Fovia
-    InterlinxIE --> |5d DICOM ??| ACRAssess
+    HOPPR --> |5 AI Results FHIR| InterlinxIE
 
-    HOPPR --> |6 AI Results DICOM SR| Fovia
+    InterlinxIE --> |6a AI Results FHIR| Fovia
+    InterlinxIE --> |6b AI Results FHIR| MicrosoftPowerscribe
+    InterlinxIE --> |6c AI Results FHIR| ACRAssess
 
-    Visage --> |7 Embed| Fovia
+    Fovia --> |7 Review AI Results| Fovia
 
     HOPPR --> |8 FHIR Agentic Workflows| HAPI_FHIR
 
-    Fovia --> |9 Confirmed Results DICOM SR| InterlinxAIO[Interlinx AI Orchestrator]
+    Fovia --> |9 Confirmed Results| InterlinxAIO[Interlinx AI Orchestrator]
 
-    InterlinxAIO --> |10a Confirmed Results DICOM SR| Visage
-    InterlinxAIO --> |10b Confirmed Results ORU| MicrosoftPowerscribe
-    InterlinxAIO --> |10c Confirmed Results ORU| ACRAssess
+    InterlinxAIO --> |10 Confirmed Results FHIR| MicrosoftPowerscribe
+    
+    PACS --> |11 Launch| MicrosoftPowerscribe
 
-    Visage --> |12 Launch| MicrosoftPowerscribe
-
-    MicrosoftPowerscribe --> |13a ORU| Visage
-    MicrosoftPowerscribe --> |13b ORU| ACRAssess
+    MicrosoftPowerscribe --> |12a ORU| PACS
+    MicrosoftPowerscribe --> |12b ORU| ACRAssess
 ```
