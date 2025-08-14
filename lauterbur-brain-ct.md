@@ -4,38 +4,50 @@
 See [clinical scenario](https://docs.google.com/document/d/1AbMGfBinw8_epP9_cIjC8s-tYXvqS_8XI4lB4wp4Qxc/edit?tab=t.0#heading=h.bxasmyukr250)
 
 ```mermaid
-flowchart LR
+ flowchart LR
     %% Current CT acquisition
-    Gen2[Demo Generator 2nd Scan] --> |1 DICOM| QveraIE[Qvera Interface Engine]
+    Gen2[Demo Generator] --> |1 DICOM| QveraIE[Qvera Interface Engine]
     QveraIE --> |2a ORM| Epic[EpicRadiant]
-    QveraIE --> |2b ORM| PACS[PACS]
+    QveraIE --> |2b ORM| Visage[Visage]
     QveraIE --> |2c ORM| NT[NewtonsTree]
     QveraIE --> |2d ORM| RadAI[RadAI]
     QveraIE --> |2e DICOM| NT
     QveraIE --> |2f DICOM| ACR[ACRAssess]
+    QveraIE --> |2g DICOM| Visage
 
     %% Prior scan retrieval
-    %% This may be via Qvera but timing needs clarifying
-    %% NT |3a DICOM-QR via Patient ID or Accession| PACS
-    QveraIE --> |3b Prior Scans| NT
+    NT --> |3a Priors DICOM-QR| Visage
+    Visage --> |3b Priors C-STORE| NT
 
     %% Send all scans to icometrix
     NT --> |4 All Studies Prior and Current| iCo[icometrix AI]
-    iCo --> |5 DICOM-SR with Percent Change| NT
+
+    %% DICOM Results include SCs, PDF as well as SR with precent change
+    iCo --> |5 DICOM Results| NT
 
     %% FHIR Reporting and Alerting
     NT --> |6a FHIR Observation| ACR
-    NT --> |6b FHIR Observation| Epic
-    NT --> |6c FHIR Observation| RadAI
+    NT --> |6b FHIR Observation| RadAI
+
+    %% Epic needs this over FHIRcast
+    %% TODO - NT to decide if they want to do this, if not then Qvera
+    NT --> |6c FHIR Observation| Epic
 
     NT --> |7a Check if Percent Change > Threshold| NT
     %% TBD what mechanism used to trigger an alert in Epic %%
-    NT --> |7b FHIR Alert Message TBD| Epic
+    NT --> |7b Worklist Priorization FHIR??| Epic
+
+    %% For the Siemens usecase, AI review through a NT worklist then results are propagated
 
     %% Optional results distribution
     NT --> |8a DICOM Results| QveraIE
-    NT --> |8b DICOM Results| PACS
-    RadAI --> |8c ORU| PACS
-    RadAI --> |8d ORU| EpicRadiant
-    RadAI --> |8e ORU| ACRAssess    
+    NT --> |8b DICOM Results| Visage
+
+    %% Reporting workflow
+    Epic --> |9a FHIRcast Context Sync| Visage
+    Epic --> |9b FHIRcast Context Sync| RadAI
+
+    RadAI --> |10 ORU| Visage
+    RadAI --> |10b ORU| EpicRadiant
+    RadAI --> |10c ORU| ACRAssess  
 ```
