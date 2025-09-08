@@ -6,11 +6,11 @@ flowchart TD
     Generator[Demo Generator] --> |1 DICOM| InterlinxIE[Interlinx Interface Engine]
 
     InterlinxIE --> |2a ORM| MicrosoftPowerscribe
-    InterlinxIE --> |2b ORM| PACS
+    InterlinxIE --> |2b ORM| Siemens[Siemens Carbon]
 
     InterlinxIE --> |3 FHIR Resources for HOPPR| HAPI_FHIR
 
-    InterlinxIE --> |4a DICOM| PACS
+    InterlinxIE --> |4a DICOM| Siemens
     InterlinxIE --> |4b DICOM| HOPPR
     InterlinxIE --> |4c DICOM| Fovia
     InterlinxIE --> |4d DICOM| ACRAssess
@@ -29,8 +29,8 @@ flowchart TD
 
     InterlinxAIO --> |10 Confirmed Results FHIR| MicrosoftPowerscribe
     
-    PACS --> |11 Launch| MicrosoftPowerscribe
+    Siemens --> |11 Launch| MicrosoftPowerscribe
 
-    MicrosoftPowerscribe --> |12a ORU| PACS
+    MicrosoftPowerscribe --> |12a ORU| Siemens
     MicrosoftPowerscribe --> |12b ORU| ACRAssess
 ```
