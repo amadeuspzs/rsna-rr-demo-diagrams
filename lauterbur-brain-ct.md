@@ -31,7 +31,7 @@ See [clinical scenario](https://docs.google.com/document/d/1AbMGfBinw8_epP9_cIjC
 
     %% Epic needs this over FHIRcast
     %% TODO - NT to decide if they want to do this, if not then Qvera
-    NT --> |6c FHIR Observation| Epic
+    NT --> |6c HL7 v2 ORU| Epic
 
     NT --> |7a Check if Percent Change > Threshold| NT
     %% TBD what mechanism used to trigger an alert in Epic %%
@@ -47,7 +47,9 @@ See [clinical scenario](https://docs.google.com/document/d/1AbMGfBinw8_epP9_cIjC
     Epic --> |9a FHIRcast Context Sync| Visage
     Epic --> |9b FHIRcast Context Sync| RadAI
 
-    RadAI --> |10 ORU| Visage
-    RadAI --> |10b ORU| EpicRadiant
-    RadAI --> |10c ORU| ACRAssess  
+    RadAI --> |10 Signed report ORU| Qvera
+
+    Qvera --> |11a ORU| Visage
+    Qvera --> |11b ORU| EpicRadiant
+    Qvera --> |11c ORU| ACRAssess  
 ```
