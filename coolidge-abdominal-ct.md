@@ -11,7 +11,7 @@ flowchart TD
     InterlinxIE --> |3 FHIR Resources for HOPPR| HAPI_FHIR
 
     InterlinxIE --> |4a DICOM| Siemens
-    InterlinxIE --> |4b DICOM| HOPPR
+    InterlinxIE --> |4b DICOMweb| HOPPR
     InterlinxIE --> |4c DICOM| Fovia
     InterlinxIE --> |4d DICOM| ACRAssess
 
@@ -25,11 +25,13 @@ flowchart TD
 
     HOPPR --> |8 FHIR Agentic Workflows| HAPI_FHIR
 
-    Fovia --> |9 Confirmed Results| InterlinxAIO[Interlinx AI Orchestrator]
+    Fovia --> |9a Confirmed Results| HOPPR
+    HOPPR --> |9b Confirmed Results| InterlinxAIO[Interlinx AI Orchestrator]
 
     InterlinxAIO --> |10 Confirmed Results FHIR| MicrosoftPowerscribe
     
-    Siemens --> |11 Launch| MicrosoftPowerscribe
+    Siemens --> |11a Launch| MicrosoftPowerscribe
+    Siemens --> |11b Launch| Fovia
 
     MicrosoftPowerscribe --> |12a ORU| Siemens
     MicrosoftPowerscribe --> |12b ORU| ACRAssess
