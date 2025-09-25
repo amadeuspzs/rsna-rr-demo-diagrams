@@ -25,10 +25,12 @@ flowchart LR
     NewtonsTree --> |6a Modified DICOM w/ AIRA| QveraIE
     NewtonsTree --> |6b Modified DICOM w/ AIRA| Visage
     NewtonsTree --> |6c FHIR Results| ACRAssess
-    NewtonsTree --> |6d FHIR Results| EpicRadiant
-    NewtonsTree --> |6e FHIR Results| RadAI
+    NewtonsTree --> |6d FHIR Results| RadAI
+    NewtonsTree --> |6e HL7 v2 ORU| EpicRadiant
 
-    RadAI --> |7a ORU| Visage
-    RadAI --> |7b ORU| EpicRadiant
-    RadAI --> |7c ORU| ACRAssess
+    RadAI --> |7 Signed report ORU| Qvera
+
+    Qvera --> |8a ORU| Visage
+    Qvera --> |8b ORU| EpicRadiant
+    Qvera --> |8c ORU| ACRAssess  
 ```
