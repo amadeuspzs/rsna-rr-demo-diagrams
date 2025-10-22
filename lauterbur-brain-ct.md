@@ -15,12 +15,8 @@ See [clinical scenario](https://docs.google.com/document/d/1AbMGfBinw8_epP9_cIjC
     QveraIE --> |2f DICOM| ACR[ACRAssess]
     QveraIE --> |2g DICOM| Visage
 
-    %% Prior scan retrieval
-    NT --> |3a Priors DICOM-QR| Visage
-    Visage --> |3b Priors C-STORE| NT
-
-    %% Send all scans to icometrix
-    NT --> |4 All Studies Prior and Current| iCo[icometrix AI]
+    %% Send scan to icometrix
+    NT --> |4 Prior or Current| iCo[icometrix AI]
 
     %% DICOM Results include SCs, PDF as well as SR with precent change
     iCo --> |5 DICOM Results| NT
@@ -28,18 +24,12 @@ See [clinical scenario](https://docs.google.com/document/d/1AbMGfBinw8_epP9_cIjC
     %% FHIR Reporting and Alerting
     NT --> |6a FHIR Observation| ACR
     NT --> |6b FHIR Observation| RadAI
-
-    %% Epic needs this over FHIRcast
-    %% TODO - NT to decide if they want to do this, if not then Qvera
     NT --> |6c HL7 v2 ORU| Epic
 
     NT --> |7a Check if Percent Change > Threshold| NT
-    %% TBD what mechanism used to trigger an alert in Epic %%
-    NT --> |7b Worklist Priorization FHIR??| Epic
+    NT --> |7b Worklist Priorization HL7 v2 ORU| Epic
 
-    %% For the Siemens usecase, AI review through a NT worklist then results are propagated
-
-    %% Optional results distribution
+    %% Results distribution
     NT --> |8a DICOM Results| QveraIE
     NT --> |8b DICOM Results| Visage
 
